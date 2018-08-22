@@ -3,14 +3,14 @@
 -- Authors: Stephen Morgan, Scott Morrison
 
 import tidy.at_least_one 
-import tidy.backwards_reasoning
+import tidy.applicable
+import tidy.make_lemma
 import tidy.rewrite_all
 import tidy.injections
 import tidy.tidy
 import tidy.transport
-import category_theory.category
 
-@[obviously] meta def obviously_impl := obviously'
+--meta def obviously' := `[skip]
 
 universes u v
 
