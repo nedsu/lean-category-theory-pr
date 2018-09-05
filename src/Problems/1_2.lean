@@ -33,8 +33,28 @@ variables (C : Type u) [𝒞 : CatGroup C] (a : 𝒞.obj ⟶ 𝒞.obj) (X : C)
 end
 
 --2 Let G be a group viewed as a one-object category. 
---Show that the natural transformations α : IdentityFunctor G ⟹ Identity Functor G correspond to elements in the centre of the group.
-theorem Grp_id_nat_trans_center (C : Type u) [𝒞 : CatGroup C] (a : 𝒞.obj ⟶ 𝒞.obj) : 
+--Show that the natural transformations α : IdentityFunctor G ⟹ Identity Functor G
+-- correspond to elements in the centre of the group.
+definition Grp_id_nat_trans_center (C : Type u) [𝒞 : CatGroup C] :
+{ a : 𝒞.obj ⟶ 𝒞.obj // ∀ x : 𝒞.obj ⟶ 𝒞.obj, a ≫ x = x ≫ a} ≃
+  (IdentityFunctor C ⟹ IdentityFunctor C) :=
+{ to_fun := sorry,
+  inv_fun := λ α, 
+    ⟨(𝟙 𝒞.obj : 𝒞.obj ⟶ ((IdentityFunctor C) +> 𝒞.obj)) ≫ 
+      ((α.components 𝒞.obj) : ((IdentityFunctor C) +> 𝒞.obj) ⟶ ((IdentityFunctor C) +> 𝒞.obj)) ≫
+      (𝟙 (𝒞.obj) : ((IdentityFunctor C) +> 𝒞.obj) ⟶ 𝒞.obj),λ x,begin 
+        rw [category.left_identity_lemma,←category.associativity_lemma],
+        rw @category.right_identity_lemma _ _ _ (CatGroup.obj C) _,
+        -- it's such a struggle to rewrite!
+        rw @category.right_identity_lemma _ _ _ (CatGroup.obj C) _,
+        -- goal now ⊢ α.components (CatGroup.obj C) ≫ x = x ≫ α.components (CatGroup.obj C)
+        sorry 
+        end⟩,
+  left_inv := sorry,
+  right_inv := sorry
+}
+
+theorem Grp_id_nat_trans_center' (C : Type u) [𝒞 : CatGroup C] (a : 𝒞.obj ⟶ 𝒞.obj) : 
 (∀ x : 𝒞.obj ⟶ 𝒞.obj, a ≫ x = x ≫ a) ↔ (∃ α : IdentityFunctor C ⟹ IdentityFunctor C, α.components 𝒞.obj = a)  :=
 begin
     apply iff.intro,
@@ -50,7 +70,7 @@ begin
                             rw Hx at f,
                             rw Hy at f,
                             convert (hc f).symm,
-                            
+                            repeat {sorry},
                         end
                     ⟩   : IdentityFunctor C ⟹ IdentityFunctor C)
                 (
