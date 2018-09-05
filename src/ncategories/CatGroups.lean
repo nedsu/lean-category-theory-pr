@@ -1,6 +1,6 @@
 import categories.category
 import categories.isomorphism
-import ncategories.ndefs
+import ncategories.Ndefs
 import algebra.group
 open categories
 open categories.isomorphism
@@ -25,21 +25,13 @@ instance [𝒞 : CatGroup C] : has_one (𝒞.obj ⟶ 𝒞.obj) :=
 
 instance CatGroupoid.homgroup [𝒞 : CatGroupoid C] (X : C) : group (X ⟶ X) :=
 { 
-    mul := category.compose,
-    mul_assoc :=begin
-                    simp
-                end,
-    one := 𝟙X,
-    one_mul :=  begin
-                    simp
-                end,
-    mul_one :=  begin
-                    simp
-                end,
-    inv :=      (λ g, (CatGroupoid.hominverse g).1),
-    mul_left_inv := begin
-                        simp 
-                    end
+    mul             := category.compose,
+    mul_assoc       := by simp,
+    one             := 𝟙X,
+    one_mul         := by simp,
+    mul_one         := by simp,
+    inv             := (λ g, (CatGroupoid.hominverse g).1),
+    mul_left_inv    := by simp
 }
 
 instance CatGroup_to_group {C : Type u} (𝒞 : CatGroup C) : group (𝒞.obj ⟶ 𝒞.obj) :=

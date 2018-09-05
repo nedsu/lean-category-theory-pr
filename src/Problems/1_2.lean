@@ -24,15 +24,16 @@ end
 
 
 section
-#print eq.rec
+--#print eq.rec
 variables (C : Type u) [𝒞 : CatGroup C] (a : 𝒞.obj ⟶ 𝒞.obj) (X : C)
-#check (eq.rec a (eq.symm(CatGroup.uniqueobj_lemma X)) : 𝒞.obj ⟶ X)
+--#check (eq.rec a (eq.symm(CatGroup.uniqueobj_lemma X)) : 𝒞.obj ⟶ X)
 --#check @congr_arg
 --#print eq.rec.congr_arg
-#print prefix eq.rec
+--#print prefix eq.rec
 end
 
---2 Let G be a group viewed as a one-object category. Show that the natural transformations α : IdentityFunctor G ⟹ Identity Functor G correspond to elements in the centre of the group.
+--2 Let G be a group viewed as a one-object category. 
+--Show that the natural transformations α : IdentityFunctor G ⟹ Identity Functor G correspond to elements in the centre of the group.
 theorem Grp_id_nat_trans_center (C : Type u) [𝒞 : CatGroup C] (a : 𝒞.obj ⟶ 𝒞.obj) : 
 (∀ x : 𝒞.obj ⟶ 𝒞.obj, a ≫ x = x ≫ a) ↔ (∃ α : IdentityFunctor C ⟹ IdentityFunctor C, α.components 𝒞.obj = a)  :=
 begin
@@ -46,7 +47,10 @@ begin
                             apply_auto_param,
                             have Hy : Y = 𝒞.obj, from CatGroup.uniqueobj_lemma Y,
                             have Hx : X = 𝒞.obj, from CatGroup.uniqueobj_lemma X,
-                            tidy
+                            rw Hx at f,
+                            rw Hy at f,
+                            convert (hc f).symm,
+                            
                         end
                     ⟩   : IdentityFunctor C ⟹ IdentityFunctor C)
                 (
