@@ -1,8 +1,9 @@
 [package]
-name = "lean-category-theory-pr"
+name = "my_project"
 version = "0.1"
 lean_version = "nightly-2018-06-21"
 path = "src"
 
 [dependencies]
-lean-tidy = {git = "https://github.com/semorrison/lean-tidy", rev = "8505cc9313eb2f9e7457b9038b84787085f477ec"}
+mathlib = {git = "https://github.com/leanprover/mathlib", rev = "913f702a5712d30324a41631d40330a351caf6a3"}
+lean-category-theory-pr = {git = "https://github.com/semorrison/lean-category-theory-pr", rev = "7d92bca90f3200232c92d9ae8b0a586b230898e9"}
