@@ -5,7 +5,7 @@ universes u v u₀ v₀
 
 namespace category_theory.isomorphism
 
-definition is_Isomorphism' {D : Type u} [𝒟 : category.{u v} D] {X Y : D} (f : X ⟶ Y) : Prop := nonempty (is_iso f)
+definition is_iso' {D : Type u} [𝒟 : category.{u v} D] {X Y : D} (f : X ⟶ Y) : Prop := nonempty (is_iso f)
 
 end category_theory.isomorphism
 
@@ -17,15 +17,15 @@ variables {D : Type u} [𝒟 : category.{u v} D] {E : Type u₀} [ℰ : category
 include 𝒟 ℰ
 
 definition is_Faithful_Functor  (F : D ⥤ E) := 
-                                ∀ {A B : D} {f g : A ⟶ B} (p : F.map' f = F.map' g), f = g
+                                ∀ {A B : D} {f g : A ⟶ B} (p : F.map f = F.map g), f = g
 
 definition is_Full_Functor      (F : D ⥤ E)  := 
-                                ∀ {A B : D} (h : F A ⟶ F B), ∃f : A ⟶ B, F.map' f = h
+                                ∀ {A B : D} (h : F A ⟶ F B), ∃f : A ⟶ B, F.map f = h
 
 structure Full_and_Faithful_Functor (F : D ⥤ E) : Type (max u v u₀ v₀) :=
     (morinv : Π {X Y : D}, (F X ⟶ F Y) → (X ⟶ Y))
-    (left_inverse' : ∀ {X Y : D} {f : X ⟶ Y}, morinv (F.map' f) = f)
-    (right_inverse' : ∀ {X Y : D} {f : F X ⟶ F Y}, F.map' (morinv f) = f)
+    (left_inverse' : ∀ {X Y : D} {f : X ⟶ Y}, morinv (F.map f) = f)
+    (right_inverse' : ∀ {X Y : D} {f : F X ⟶ F Y}, F.map (morinv f) = f)
 
 restate_axiom Full_and_Faithful_Functor.left_inverse'
 restate_axiom Full_and_Faithful_Functor.right_inverse'
@@ -41,8 +41,8 @@ begin
         unfold is_Faithful_Functor,
         intros,
         exact calc
-            f       = a.morinv (F.map' f) : by rw Full_and_Faithful_Functor.left_inverse
-            ...     = a.morinv (F.map' g) : by rw p
+            f       = a.morinv (F.map f) : by rw Full_and_Faithful_Functor.left_inverse
+            ...     = a.morinv (F.map g) : by rw p
             ...     = g                 : by rw Full_and_Faithful_Functor.left_inverse
 end
 
@@ -56,11 +56,11 @@ begin
                             end,
                 left_inverse' :=     begin
                                         intros,
-                                        exact (a.right ((classical.indefinite_description (λ (x : X ⟶ Y), F.map' x = F.map' f) _).2))
+                                        exact (a.right ((classical.indefinite_description (λ (x : X ⟶ Y), F.map x = F.map f) _).2))
                                     end,
                 right_inverse' :=    begin
                                         intros,
-                                        exact (classical.indefinite_description (λ (x : X ⟶ Y), F.map' x = f) _).2
+                                        exact (classical.indefinite_description (λ (x : X ⟶ Y), F.map x = f) _).2
                                     end,
             }
 

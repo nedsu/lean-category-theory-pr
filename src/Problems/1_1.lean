@@ -1,11 +1,8 @@
-import categories.category
-import categories.isomorphism
-import categories.tactics
-import categories.functor
-import ncategories.ndefs
-open categories
-open categories.isomorphism
-open categories.functor
+import category_theory.isomorphism
+import ncategories.Ndefs
+open category_theory
+open category_theory.isomorphism
+open category_theory.functor
 open tactic
 
 --delaration of universes and variables
@@ -19,12 +16,12 @@ theorem uniq_id (X : C) (id' : X ⟶ X) : (∀ {A : C} (g : X ⟶ A), id' ≫ g 
         intros hl hr,
         transitivity,
         symmetry,
-        exact category.right_identity_lemma C id',
+        exact category.comp_id C id',
         exact hl(𝟙X)
     end
 
 -- 1b Show that a morphism with both a left inverse and right inverse is an isomorphism
-theorem landr_id (X Y Z : C) (f : X ⟶ Y) : (∃ gl : Y ⟶ X, gl ≫ f = 𝟙Y) → (∃ gr : Y ⟶ X, f ≫ gr = 𝟙X) → (is_Isomorphism' f) :=
+theorem landr_id (X Y Z : C) (f : X ⟶ Y) : (∃ gl : Y ⟶ X, gl ≫ f = 𝟙Y) → (∃ gr : Y ⟶ X, f ≫ gr = 𝟙X) → (is_iso' f) :=
     begin
     intros,
     cases (classical.indefinite_description _ a) with gl hl,
@@ -36,14 +33,14 @@ theorem landr_id (X Y Z : C) (f : X ⟶ Y) : (∃ gl : Y ⟶ X, gl ≫ f = 𝟙Y
                 symmetry,
                 exact calc
                 𝟙Y     = gl ≫ f                : eq.symm hl
-                ...    = gl ≫ 𝟙X ≫ f           : by rw category.left_identity_lemma C f
-                ...    = (gl ≫ 𝟙X) ≫ f         : by rw category.associativity_lemma
+                ...    = gl ≫ 𝟙X ≫ f           : by rw category.id_comp C f
+                ...    = (gl ≫ 𝟙X) ≫ f         : by rw category.assoc
                 ...    = (gl ≫ (f ≫ gr)) ≫ f  : by rw hr
-                ...    = ((gl ≫ f) ≫ gr) ≫ f  : by rw category.associativity_lemma C gl f gr 
+                ...    = ((gl ≫ f) ≫ gr) ≫ f  : by rw category.assoc C gl f gr 
                 ...    = (𝟙Y ≫ gr) ≫ f         : by rw hl
-                ...    = gr ≫ f                 : by rw category.left_identity_lemma C gr
+                ...    = gr ≫ f                 : by rw category.id_comp C gr
             end⟩ 
-        : is_Isomorphism f)
+        : is_iso f)
     end
 
 -- 1c Consider f : X ⟶ Y and g : Y ⟶ Z. Show that if two out of f, g and gf are isomorphisms,then so is the third.
@@ -51,7 +48,7 @@ section Two_Out_Of_Three
     variables (X Y Z : C)
     variables (f : X ⟶ Y) (g : Y ⟶ Z)
     
-    theorem tootfirsec : is_Isomorphism' f → is_Isomorphism' g → is_Isomorphism' (f ≫ g) :=
+    theorem tootfirsec : is_iso' f → is_iso' g → is_iso' (f ≫ g) :=
         begin
             intros hf hg,
             apply hf.elim,
@@ -62,22 +59,22 @@ section Two_Out_Of_Three
                 begin
                     simp,
                     exact calc
-                    f ≫ g ≫ Ig.1 ≫ If.1 = f ≫ (g ≫ Ig.1) ≫ If.1 : by rw category.associativity_lemma
-                    ...                   = f ≫ 𝟙Y ≫ If.1          : by rw is_Isomorphism.witness_1_lemma
-                    ...                   = f ≫ If.1               : by rw category.left_identity_lemma
-                    ...                   = 𝟙X                      : by rw is_Isomorphism.witness_1_lemma
+                    f ≫ g ≫ Ig.1 ≫ If.1 = f ≫ (g ≫ Ig.1) ≫ If.1 : by rw category.assoc
+                    ...                   = f ≫ 𝟙Y ≫ If.1          : by rw is_iso.hom_inv_id
+                    ...                   = f ≫ If.1               : by rw category.id_comp
+                    ...                   = 𝟙X                      : by rw is_iso.hom_inv_id
                 end,    
                 begin 
                     simp,
                     exact calc
-                        Ig.1 ≫ If.1 ≫ f ≫ g  = Ig.1 ≫ (If.1 ≫ f) ≫ g : by rw category.associativity_lemma
-                        ...                    = Ig.1 ≫ 𝟙Y ≫ g          : by rw is_Isomorphism.witness_2_lemma
-                        ...                    = Ig.1 ≫ g               : by rw category.left_identity_lemma
-                        ...                    = 𝟙Z                      : by rw is_Isomorphism.witness_2_lemma
+                        Ig.1 ≫ If.1 ≫ f ≫ g  = Ig.1 ≫ (If.1 ≫ f) ≫ g : by rw category.assoc
+                        ...                    = Ig.1 ≫ 𝟙Y ≫ g          : by rw is_iso.inv_hom_id
+                        ...                    = Ig.1 ≫ g               : by rw category.id_comp
+                        ...                    = 𝟙Z                      : by rw is_iso.inv_hom_id
                 end⟩
         end
 
-    theorem tootsecthi : is_Isomorphism' g → is_Isomorphism' (f ≫ g) → is_Isomorphism' f :=
+    theorem tootsecthi : is_iso' g → is_iso' (f ≫ g) → is_iso' f :=
         begin
             intros hg hfg,
             apply hg.elim,
@@ -88,24 +85,24 @@ section Two_Out_Of_Three
                     begin
                         simp,
                         exact calc
-                            f ≫ g ≫ Ifg.1 = (f ≫ g) ≫ Ifg.1 : by rw category.associativity_lemma
-                            ... = 𝟙X : by rw is_Isomorphism.witness_1_lemma
+                            f ≫ g ≫ Ifg.1 = (f ≫ g) ≫ Ifg.1 : by rw category.assoc
+                            ... = 𝟙X : by rw is_iso.hom_inv_id
                     end,
                     begin
                         simp,
                         exact calc
-                            g ≫ Ifg.1 ≫ f = (g ≫ Ifg.1 ≫ f) ≫ 𝟙Y : by rw category.right_identity_lemma
-                            ... = g ≫ (Ifg.1 ≫ f) ≫ 𝟙Y : by rw category.associativity_lemma
-                            ... = g ≫ Ifg.1 ≫ f ≫ 𝟙Y : by rw category.associativity_lemma
-                            ... = g ≫ Ifg.1 ≫ f ≫ g ≫ Ig.1 : by rw is_Isomorphism.witness_1_lemma
-                            ... = g ≫ (Ifg.1 ≫ ((f ≫ g) ≫ Ig.1)) : by rw category.associativity_lemma
-                            ... = g ≫ (Ifg.1 ≫ (f ≫ g)) ≫ Ig.1 : by rw (category.associativity_lemma C Ifg.1 (f ≫ g) Ig.1)
-                            ... = g ≫ 𝟙Z ≫ Ig.1 : by rw is_Isomorphism.witness_2_lemma
-                            ... = g ≫ Ig.1 : by rw category.left_identity_lemma
-                            ... = 𝟙Y : by rw is_Isomorphism.witness_1_lemma
+                            g ≫ Ifg.1 ≫ f = (g ≫ Ifg.1 ≫ f) ≫ 𝟙Y : by rw category.comp_id
+                            ... = g ≫ (Ifg.1 ≫ f) ≫ 𝟙Y : by rw category.assoc
+                            ... = g ≫ Ifg.1 ≫ f ≫ 𝟙Y : by rw category.assoc
+                            ... = g ≫ Ifg.1 ≫ f ≫ g ≫ Ig.1 : by rw is_iso.hom_inv_id
+                            ... = g ≫ (Ifg.1 ≫ ((f ≫ g) ≫ Ig.1)) : by rw category.assoc
+                            ... = g ≫ (Ifg.1 ≫ (f ≫ g)) ≫ Ig.1 : by rw (category.assoc C Ifg.1 (f ≫ g) Ig.1)
+                            ... = g ≫ 𝟙Z ≫ Ig.1 : by rw is_iso.inv_hom_id
+                            ... = g ≫ Ig.1 : by rw category.id_comp
+                            ... = 𝟙Y : by rw is_iso.hom_inv_id
                     end⟩
         end
-    theorem tootfirthi : is_Isomorphism' f → is_Isomorphism' (f ≫ g) → is_Isomorphism' g :=
+    theorem tootfirthi : is_iso' f → is_iso' (f ≫ g) → is_iso' g :=
         begin
             intros hf hfg,
             apply hf.elim,
@@ -116,15 +113,15 @@ section Two_Out_Of_Three
                     begin
                         simp,
                         exact calc
-                            g ≫ Ifg.1 ≫ f = 𝟙Y ≫ g ≫ Ifg.1 ≫ f : by rw category.left_identity_lemma
-                            ... = (If.1 ≫ f) ≫ g ≫ Ifg.1 ≫ f : by rw is_Isomorphism.witness_2_lemma
-                            ... = ((If.1 ≫ f) ≫ g) ≫ Ifg.1 ≫ f : by rw (category.associativity_lemma C (If.1 ≫ f) g (Ifg.1 ≫ f))
-                            ... = (If.1 ≫ (f ≫ g)) ≫ Ifg.1 ≫ f : by rw (category.associativity_lemma C If.1 f g)
-                            ... = If.1 ≫ (f ≫ g) ≫ Ifg.1 ≫ f : by rw category.associativity_lemma
-                            ... = If.1 ≫ ((f ≫ g) ≫ Ifg.1) ≫ f : by rw (category.associativity_lemma C (f ≫ g) Ifg.1 f)
-                            ... = If.1 ≫ 𝟙X ≫ f : by rw is_Isomorphism.witness_1_lemma
-                            ... = If.1 ≫ f : by rw category.left_identity_lemma
-                            ... = 𝟙Y : by rw is_Isomorphism.witness_2_lemma
+                            g ≫ Ifg.1 ≫ f = 𝟙Y ≫ g ≫ Ifg.1 ≫ f : by rw category.id_comp
+                            ... = (If.1 ≫ f) ≫ g ≫ Ifg.1 ≫ f : by rw is_iso.inv_hom_id
+                            ... = ((If.1 ≫ f) ≫ g) ≫ Ifg.1 ≫ f : by rw (category.assoc C (If.1 ≫ f) g (Ifg.1 ≫ f))
+                            ... = (If.1 ≫ (f ≫ g)) ≫ Ifg.1 ≫ f : by rw (category.assoc C If.1 f g)
+                            ... = If.1 ≫ (f ≫ g) ≫ Ifg.1 ≫ f : by rw category.assoc
+                            ... = If.1 ≫ ((f ≫ g) ≫ Ifg.1) ≫ f : by rw (category.assoc C (f ≫ g) Ifg.1 f)
+                            ... = If.1 ≫ 𝟙X ≫ f : by rw is_iso.hom_inv_id
+                            ... = If.1 ≫ f : by rw category.id_comp
+                            ... = 𝟙Y : by rw is_iso.inv_hom_id
                     end,
                     begin
                         simp
@@ -136,32 +133,32 @@ variables {D : Type u} [𝒟 : category.{u v} D]
 include 𝒟
 
 -- 1d Show functors preserve isomorphisms
-theorem fun_id (F : C ↝ D) (X Y : C) (f : X ⟶ Y) : (is_Isomorphism' f) → (is_Isomorphism' (F &> f)) :=
+theorem fun_id (F : C ⥤ D) (X Y : C) (f : X ⟶ Y) : (is_iso' f) → (is_iso' (F.map f)) :=
     begin
         intro hf,
         apply hf.elim,
         intro If,
         exact nonempty.intro
-            /- ⟨F &> If.1,
+            /- ⟨F.map If.1,
             begin
                 simp,
                 exact calc
-                    (F &> f) ≫ (F &> If.1) = F &> (f ≫ If.1) : by rw Functor.functoriality_lemma
-                    ... = F &> 𝟙X : by rw is_Isomorphism.witness_1_lemma
-                    ... = 𝟙 (F +> X) : by rw Functor.identities
+                    (F.map f) ≫ (F.map If.1) = F.map (f ≫ If.1) : by rw functor.functoriality_lemma
+                    ... = F.map 𝟙X : by rw is_iso.hom_inv_id
+                    ... = 𝟙 (F X) : by rw functor.identities
             end,
             begin
                 simp,
                 exact calc
-                    (F &> If.1) ≫ (F &> f) = F &> (If.1 ≫ f) : by rw Functor.functoriality_lemma
-                    ... = F &> 𝟙Y : by rw is_Isomorphism.witness_2_lemma
-                    ... = 𝟙 (F +> Y) : by rw Functor.identities
+                    (F.map If.1) ≫ (F.map f) = F.map (If.1 ≫ f) : by rw functor.functoriality_lemma
+                    ... = F.map 𝟙Y : by rw is_iso.inv_hom_id
+                    ... = 𝟙 (F Y) : by rw functor.identities
             end⟩ -/
-            (isomorphism.is_Isomorphism_of_Isomorphism (F.onIsomorphisms ⟨f , If.1, by simp, by simp⟩))
+            (is_iso.of_iso (F.on_iso ⟨f , If.1, by simp, by simp⟩))
     end
 
--- 1e Show that if F : C ↝ D is full and faithful, and F &> f : F +> A ⟶ F +> B is an isomorphism in 𝒟, then f : A ⟶ B is an isomorphism in 𝒞
-theorem reflecting_isomorphisms (F : C ↝ D) (X Y : C) (f : X ⟶ Y) : is_Full_Functor F → is_Faithful_Functor F → is_Isomorphism' (F &> f) → is_Isomorphism' f :=
+-- 1e Show that if F : C ⥤ D is full and faithful, and F.map f : F A ⟶ F B is an isomorphism in 𝒟, then f : A ⟶ B is an isomorphism in 𝒞
+theorem reflecting_isomorphisms (F : C ⥤ D) (X Y : C) (f : X ⟶ Y) : is_Full_Functor F → is_Faithful_Functor F → is_iso' (F.map f) → is_iso' f :=
     begin
         intros hfu hfa hFf,
         apply hFf.elim,
@@ -173,19 +170,19 @@ theorem reflecting_isomorphisms (F : C ↝ D) (X Y : C) (f : X ⟶ Y) : is_Full_
                 simp,
                 exact hfa
                     (calc
-                        F &> (f ≫ g) = (F &> f) ≫ (F &> g) : by rw Functor.functoriality_lemma
-                        ... = 𝟙(F +> X) : by rw [hg, is_Isomorphism.witness_1_lemma]
-                        ... = F &> (𝟙X) : by rw Functor.identities
+                        F.map (f ≫ g) = (F.map f) ≫ (F.map g) : by rw functor.map_comp
+                        ... = 𝟙(F X) : by rw [hg, is_iso.hom_inv_id]
+                        ... = F.map (𝟙X) : by rw functor.map_id
                     )
             end,
             begin
                 simp,
                 exact hfa
                     (calc
-                        F &> (g ≫ f) = (F &> g) ≫ (F &> f) : by rw Functor.functoriality_lemma
-                        ... = 𝟙(F +> Y) : by rw [hg, is_Isomorphism.witness_2_lemma]
-                        ... = F &> (𝟙Y) : by rw Functor.identities
+                        F.map (g ≫ f) = (F.map g) ≫ (F.map f) : by rw functor.map_comp
+                        ... = 𝟙(F Y) : by rw [hg, is_iso.inv_hom_id]
+                        ... = F.map (𝟙Y) : by rw functor.map_id
                     )
             end⟩
-            : is_Isomorphism f)
+            : is_iso f)
     end

@@ -1,6 +1,6 @@
 import ncategories.CatGroups
 import categories.tactics
-import categories.functor
+import category_theory.functor
 import categories.natural_transformation
 open categories
 open categories.isomorphism
