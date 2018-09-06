@@ -32,16 +32,16 @@ end
 -- correspond to elements in the centre of the group.
 definition Grp_id_nat_trans_center (C : Type u) [𝒞 : CatGroup C] :
 { a : 𝒞.obj ⟶ 𝒞.obj // ∀ x : 𝒞.obj ⟶ 𝒞.obj, a ≫ x = x ≫ a} ≃ (functor.id C ⟹ functor.id C) :=
-{ to_fun := λ ⟨a , ha⟩, _ ,
-  inv_fun := λ α, ⟨(𝟙 𝒞.obj : 𝒞.obj ⟶ ((functor.id C) 𝒞.obj)) ≫ ((α 𝒞.obj) 
-                    : ((functor.id C) 𝒞.obj) ⟶ ((functor.id C) 𝒞.obj)) ≫
+{ to_fun := λ ⟨a , ha⟩, 
+                ⟨ (λ X, (𝟙X : (functor.id C) X ⟶ X) ≫ (𝟙𝒞.obj : X ⟶ 𝒞.obj) ≫ a ≫ (𝟙𝒞.obj : 𝒞.obj ⟶ X) ≫ (𝟙X : X ⟶ (functor.id C) X) ) , _ ⟩,
+  inv_fun := λ α, ⟨(𝟙 𝒞.obj : 𝒞.obj ⟶ ((functor.id C) 𝒞.obj)) ≫ α 𝒞.obj ≫
                     (𝟙 (𝒞.obj) : ((functor.id C) 𝒞.obj) ⟶ 𝒞.obj),λ x,
                         begin
                             rw [category.id_comp,←category.assoc],
-                            rw @category.comp_id _ _ _ (CatGroup.obj C) _,
+                            rw @category.comp_id _ _ _ 𝒞.obj _,
                             -- it's such a struggle to rewrite!
-                            rw @category.comp_id _ _ _ (CatGroup.obj C) _,
-                            have H : α (CatGroup.obj C) ≫ ((functor.id C).map x) = ((functor.id C).map x) ≫ α (CatGroup.obj C), from by rw nat_trans.naturality,
+                            rw @category.comp_id _ _ _ 𝒞.obj _,
+                            have H : α 𝒞.obj ≫ ((functor.id C).map x) = ((functor.id C).map x) ≫ α 𝒞.obj, from by rw nat_trans.naturality,
                             rw functor.id_map x at H,
                             assumption
                         end⟩,
