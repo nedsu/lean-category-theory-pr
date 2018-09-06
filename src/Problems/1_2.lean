@@ -1,5 +1,6 @@
 import ncategory_theory.CatGroups
 import category_theory.natural_transformation
+import data.equiv.basic
 open category_theory
 open category_theory.isomorphism
 open category_theory.functor
@@ -34,8 +35,7 @@ end
 --Show that the natural transformations α : functor.id G ⟹ Identity Functor G
 -- correspond to elements in the centre of the group.
 definition Grp_id_nat_trans_center (C : Type u) [𝒞 : CatGroup C] :
-{ a : 𝒞.obj ⟶ 𝒞.obj // ∀ (x : 𝒞.obj ⟶ 𝒞.obj), (1 = 0)} ≃
-  (functor.id C ⟹ functor.id C) :=
+{ a : 𝒞.obj ⟶ 𝒞.obj // ∀ x : 𝒞.obj ⟶ 𝒞.obj, a ≫ x = x ≫ a} ≃ (functor.id C ⟹ functor.id C) :=
 { to_fun := sorry,
   inv_fun := λ α, 
     ⟨(𝟙 𝒞.obj : 𝒞.obj ⟶ ((functor.id C) 𝒞.obj)) ≫ 

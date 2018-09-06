@@ -1,9 +1,6 @@
-import categories.category
-import categories.isomorphism
-import categories.tactics
-import categories.functor
-import ncategories.Ndefs
-open categories categories.isomorphism categories.functor categories.Idempotent tactic
+import category_theory.isomorphism
+import ncategory_theory.Ndefs
+open category_theory category_theory.isomorphism category_theory.functor category_theory.Idempotent tactic
 
 --delaration of universes and variables
 universes u v u₁ v₁
@@ -19,12 +16,12 @@ structure class_of_Idempotents (E : Type v) : Type(max u v) :=
 
 instance Idempotents_category (E : Type v) [ℰ : class_of_Idempotents.{_ v} C E] : category.{v _} E :=
     {
-        Hom := λ e d : E, {f : (ℰ.mor e).1 ⟶ (ℰ.mor d).1 // (ℰ.mor e).2 ≫ f ≫ (ℰ.mor d).2 = f},
-        compose := (λ _ _ _ f g, (↑f ≫ ↑g)),
-        identity := sorry,
-        left_identity := sorry,
-        right_identity := sorry,
-        associativity := sorry
+        hom         := λ e d : E, {f : (ℰ.mor e).1 ⟶ (ℰ.mor d).1 // (ℰ.mor e).2 ≫ f ≫ (ℰ.mor d).2 = f},
+        comp        := (λ _ _ _ f g, (↑f ≫ ↑g)),
+        id          := sorry,
+        id_comp'    := sorry,
+        comp_id'    := sorry,
+        assoc'      := sorry
     }
 
 end Idempotent
