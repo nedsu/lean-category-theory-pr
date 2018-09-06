@@ -32,32 +32,19 @@ end
 -- correspond to elements in the centre of the group.
 definition Grp_id_nat_trans_center (C : Type u) [𝒞 : CatGroup C] :
 { a : 𝒞.obj ⟶ 𝒞.obj // ∀ x : 𝒞.obj ⟶ 𝒞.obj, a ≫ x = x ≫ a} ≃ (functor.id C ⟹ functor.id C) :=
-{ to_fun := sorry,
-  inv_fun := λ α, 
-    ⟨(𝟙 𝒞.obj : 𝒞.obj ⟶ ((functor.id C) 𝒞.obj)) ≫ 
-      ((α 𝒞.obj) : ((functor.id C) 𝒞.obj) ⟶ ((functor.id C) 𝒞.obj)) ≫
-      (𝟙 (𝒞.obj) : ((functor.id C) 𝒞.obj) ⟶ 𝒞.obj),λ x,
-        begin
-            /-exact calc
-                (𝟙 (CatGroup.obj C) ≫ α (CatGroup.obj C) ≫ 𝟙 (CatGroup.obj C)) ≫ x = 𝟙 (CatGroup.obj C) ≫ (α (CatGroup.obj C) ≫ 𝟙 (CatGroup.obj C)) ≫ x : by rw category.assoc
-                ...                     =   𝟙 (CatGroup.obj C) ≫ α (CatGroup.obj C) ≫ 𝟙 (CatGroup.obj C) ≫ x  : by rw category.assoc
-                ...                     =   𝟙 (CatGroup.obj C) ≫ α (CatGroup.obj C) ≫ x                        : by rw category.id_comp _ x
-                ...                     =   α (CatGroup.obj C) ≫ x                                              : by rw @category.id_comp _ _ _ (CatGroup.obj C) _
-                ...                     =   α (CatGroup.obj C) ≫ ((functor.id C).map x)                         : by simp
-                ...                     =   ((functor.id C).map x) ≫ α (CatGroup.obj C)                         : by rw nat_trans.naturality
-                ...                     =   x ≫ α (CatGroup.obj C)                                              : by simp
-                ...                     =   x ≫ 𝟙 (CatGroup.obj C) ≫ α (CatGroup.obj C)                        : by rw category.id_comp
-                ...                     =   x ≫ 𝟙 (CatGroup.obj C) ≫ α (CatGroup.obj C) ≫ 𝟙 (CatGroup.obj C) : by rw @category.comp_id _ _ _ (CatGroup.obj C) _ -/
-      
-        rw [category.id_comp,←category.assoc],
-        rw @category.comp_id _ _ _ (CatGroup.obj C) _,
-        -- it's such a struggle to rewrite!
-        rw @category.comp_id _ _ _ (CatGroup.obj C) _,
-        -- goal now ⊢ α (CatGroup.obj C) ≫ x = x ≫ α (CatGroup.obj C)
-        have H : α (CatGroup.obj C) ≫ ((functor.id C).map x) = ((functor.id C).map x) ≫ α (CatGroup.obj C), from by rw nat_trans.naturality,
-        rw functor.id_map x at H,
-        assumption
-        end⟩,
+{ to_fun := λ ⟨a , ha⟩, _ ,
+  inv_fun := λ α, ⟨(𝟙 𝒞.obj : 𝒞.obj ⟶ ((functor.id C) 𝒞.obj)) ≫ ((α 𝒞.obj) 
+                    : ((functor.id C) 𝒞.obj) ⟶ ((functor.id C) 𝒞.obj)) ≫
+                    (𝟙 (𝒞.obj) : ((functor.id C) 𝒞.obj) ⟶ 𝒞.obj),λ x,
+                        begin
+                            rw [category.id_comp,←category.assoc],
+                            rw @category.comp_id _ _ _ (CatGroup.obj C) _,
+                            -- it's such a struggle to rewrite!
+                            rw @category.comp_id _ _ _ (CatGroup.obj C) _,
+                            have H : α (CatGroup.obj C) ≫ ((functor.id C).map x) = ((functor.id C).map x) ≫ α (CatGroup.obj C), from by rw nat_trans.naturality,
+                            rw functor.id_map x at H,
+                            assumption
+                        end⟩,
   left_inv := sorry,
   right_inv := sorry
 }
