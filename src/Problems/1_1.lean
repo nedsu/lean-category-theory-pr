@@ -1,5 +1,5 @@
 import category_theory.isomorphism
-import ncategories.Ndefs
+import ncategory_theory.Ndefs
 open category_theory
 open category_theory.isomorphism
 open category_theory.functor

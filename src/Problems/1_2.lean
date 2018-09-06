@@ -1,53 +1,51 @@
-import ncategories.CatGroups
-import categories.tactics
-import category_theory.functor
-import categories.natural_transformation
-open categories
-open categories.isomorphism
-open categories.functor
-open categories.CatGroup
-open categories.natural_transformation
+import ncategory_theory.CatGroups
+import category_theory.natural_transformation
+open category_theory
+open category_theory.isomorphism
+open category_theory.functor
+open category_theory.CatGroup
+open category_theory.nat_trans
 
 --delaration of universes and variables
 universes u v u₀ v₀ u₁ v₁ u₂ v₂ 
 
 
-lemma t {C : Type u} [𝒞 : CatGroup C] : ∀ X Y : C,((𝒞.obj ⟶ 𝒞.obj) = ((IdentityFunctor C) +> X ⟶ (IdentityFunctor C) +> Y)) :=
+lemma t {C : Type u} [𝒞 : CatGroup C] : ∀ X Y : C,((𝒞.obj ⟶ 𝒞.obj) = ((functor.id C) X ⟶ (functor.id C) Y)) :=
 begin
 intros,
 exact calc
-    (𝒞.obj ⟶ 𝒞.obj) = (((IdentityFunctor C) +> (𝒞.obj)) ⟶ 𝒞.obj) : by simp
-    ... = ((IdentityFunctor C) +> 𝒞.obj ⟶ (IdentityFunctor C) +> 𝒞.obj) : by simp
-    ... = ((IdentityFunctor C) +> X ⟶ (IdentityFunctor C) +> 𝒞.obj) : by rw CatGroup.uniqueobj_lemma X
-    ... = ((IdentityFunctor C) +> X ⟶ (IdentityFunctor C) +> Y) : by rw CatGroup.uniqueobj_lemma Y
+    (𝒞.obj ⟶ 𝒞.obj) = (((functor.id C) (𝒞.obj)) ⟶ 𝒞.obj) : by simp
+    ... = ((functor.id C) 𝒞.obj ⟶ (functor.id C) 𝒞.obj) : by simp
+    ... = ((functor.id C) X ⟶ (functor.id C) 𝒞.obj) : by rw CatGroup.uniqueobj X
+    ... = ((functor.id C) X ⟶ (functor.id C) Y) : by rw CatGroup.uniqueobj Y
 end
 
 
 section
 --#print eq.rec
 variables (C : Type u) [𝒞 : CatGroup C] (a : 𝒞.obj ⟶ 𝒞.obj) (X : C)
---#check (eq.rec a (eq.symm(CatGroup.uniqueobj_lemma X)) : 𝒞.obj ⟶ X)
+--#check (eq.rec a (eq.symm(CatGroup.uniqueobj X)) : 𝒞.obj ⟶ X)
 --#check @congr_arg
 --#print eq.rec.congr_arg
 --#print prefix eq.rec
 end
 
 --2 Let G be a group viewed as a one-object category. 
---Show that the natural transformations α : IdentityFunctor G ⟹ Identity Functor G
+--Show that the natural transformations α : functor.id G ⟹ Identity Functor G
 -- correspond to elements in the centre of the group.
 definition Grp_id_nat_trans_center (C : Type u) [𝒞 : CatGroup C] :
-{ a : 𝒞.obj ⟶ 𝒞.obj // ∀ x : 𝒞.obj ⟶ 𝒞.obj, a ≫ x = x ≫ a} ≃
-  (IdentityFunctor C ⟹ IdentityFunctor C) :=
+{ a : 𝒞.obj ⟶ 𝒞.obj // ∀ (x : 𝒞.obj ⟶ 𝒞.obj), (1 = 0)} ≃
+  (functor.id C ⟹ functor.id C) :=
 { to_fun := sorry,
   inv_fun := λ α, 
-    ⟨(𝟙 𝒞.obj : 𝒞.obj ⟶ ((IdentityFunctor C) +> 𝒞.obj)) ≫ 
-      ((α.components 𝒞.obj) : ((IdentityFunctor C) +> 𝒞.obj) ⟶ ((IdentityFunctor C) +> 𝒞.obj)) ≫
-      (𝟙 (𝒞.obj) : ((IdentityFunctor C) +> 𝒞.obj) ⟶ 𝒞.obj),λ x,begin 
-        rw [category.left_identity_lemma,←category.associativity_lemma],
-        rw @category.right_identity_lemma _ _ _ (CatGroup.obj C) _,
+    ⟨(𝟙 𝒞.obj : 𝒞.obj ⟶ ((functor.id C) 𝒞.obj)) ≫ 
+      ((α 𝒞.obj) : ((functor.id C) 𝒞.obj) ⟶ ((functor.id C) 𝒞.obj)) ≫
+      (𝟙 (𝒞.obj) : ((functor.id C) 𝒞.obj) ⟶ 𝒞.obj),λ x,begin 
+        rw [category.id_comp,←category.assoc],
+        rw @category.comp_id _ _ _ (CatGroup.obj C) _,
         -- it's such a struggle to rewrite!
-        rw @category.right_identity_lemma _ _ _ (CatGroup.obj C) _,
-        -- goal now ⊢ α.components (CatGroup.obj C) ≫ x = x ≫ α.components (CatGroup.obj C)
+        rw @category.comp_id _ _ _ (CatGroup.obj C) _,
+        -- goal now ⊢ α (CatGroup.obj C) ≫ x = x ≫ α (CatGroup.obj C)
         sorry 
         end⟩,
   left_inv := sorry,
@@ -55,7 +53,7 @@ definition Grp_id_nat_trans_center (C : Type u) [𝒞 : CatGroup C] :
 }
 
 theorem Grp_id_nat_trans_center' (C : Type u) [𝒞 : CatGroup C] (a : 𝒞.obj ⟶ 𝒞.obj) : 
-(∀ x : 𝒞.obj ⟶ 𝒞.obj, a ≫ x = x ≫ a) ↔ (∃ α : IdentityFunctor C ⟹ IdentityFunctor C, α.components 𝒞.obj = a)  :=
+(∀ x : 𝒞.obj ⟶ 𝒞.obj, a ≫ x = x ≫ a) ↔ (∃ α : functor.id C ⟹ functor.id C, α 𝒞.obj = a)  :=
 begin
     apply iff.intro,
         intro hc,
@@ -65,14 +63,14 @@ begin
                         (λ X , cast (t X X) a), 
                         begin
                             apply_auto_param,
-                            have Hy : Y = 𝒞.obj, from CatGroup.uniqueobj_lemma Y,
-                            have Hx : X = 𝒞.obj, from CatGroup.uniqueobj_lemma X,
+                            have Hy : Y = 𝒞.obj, from CatGroup.uniqueobj Y,
+                            have Hx : X = 𝒞.obj, from CatGroup.uniqueobj X,
                             rw Hx at f,
                             rw Hy at f,
                             convert (hc f).symm,
                             repeat {sorry},
                         end
-                    ⟩   : IdentityFunctor C ⟹ IdentityFunctor C)
+                    ⟩   : functor.id C ⟹ functor.id C)
                 (
                     begin
                         simp,
@@ -83,9 +81,9 @@ begin
         cases (classical.indefinite_description _ hn) with α ha,
         intro,
         exact calc
-            a ≫ x = (α.components 𝒞.obj) ≫ x : by rw ha
-            ... = (α.components 𝒞.obj) ≫ ((IdentityFunctor C) &> x) : by simp
-            ... = ((IdentityFunctor C) &> x) ≫ (α.components 𝒞.obj) : by rw NaturalTransformation.naturality_lemma
-            ... = x ≫ (α.components 𝒞.obj) : by simp
+            a ≫ x = (α 𝒞.obj) ≫ x : by rw ha
+            ... = (α 𝒞.obj) ≫ ((functor.id C).map x) : by simp
+            ... = ((functor.id C).map x) ≫ (α 𝒞.obj) : by rw nat_trans.naturality
+            ... = x ≫ (α 𝒞.obj) : by simp
             ... = x ≫ a : by rw ha
 end

@@ -1,31 +1,30 @@
-import categories.category
-import categories.isomorphism
-import ncategories.Ndefs
+import category_theory.isomorphism
+import ncategory_theory.Ndefs
 import algebra.group
-open categories
-open categories.isomorphism
+open category_theory
+open category_theory.isomorphism
 universes u v
 
-namespace categories.CatGroup
+namespace category_theory.CatGroup
 
 variables (C : Type u)
 definition D := unit
 
 class CatGroupoid (C : Type u) extends category.{u v} C :=
-    (hominverse : Π {X Y : C} (f : X ⟶ Y), is_Isomorphism f)
+    (hominverse : Π {X Y : C} (f : X ⟶ Y), is_iso f)
 
 class CatGroup (C : Type u) extends CatGroupoid C :=
     (obj : C)
-    (uniqueobj : ∀ X : C, X = obj)
+    (uniqueobj' : ∀ X : C, X = obj)
 
-make_lemma CatGroup.uniqueobj
+restate_axiom CatGroup.uniqueobj'
 
 instance [𝒞 : CatGroup C] : has_one (𝒞.obj ⟶ 𝒞.obj) :=
 { one := 𝟙 𝒞.obj}
 
 instance CatGroupoid.homgroup [𝒞 : CatGroupoid C] (X : C) : group (X ⟶ X) :=
 { 
-    mul             := category.compose,
+    mul             := category.comp,
     mul_assoc       := by simp,
     one             := 𝟙X,
     one_mul         := by simp,
@@ -39,33 +38,26 @@ CatGroupoid.homgroup C 𝒞.obj
 
 instance group_to_CatGroup (α : Type v) [group α] : CatGroup.{_ v} D :=
 { 
-    Hom             :=  (λ X Y : D, α),
-    identity        :=  (λ X : D, (1 : α)), 
-    compose         :=  (λ X Y Z : D, (λ x y : α, (x * y : α))),
-    left_identity   :=  by simp,
-    right_identity  :=  by simp,
-    associativity   :=  begin
-                            intros,
-                            rw mul_assoc
-                        end,  
-    hominverse      :=  begin
-                            intros _ _ x,
-                            exact   {
-                                        inverse := has_inv.inv x, 
-                                        witness_1 :=begin
-                                                        simp
-                                                    end,
-                                        witness_2 :=begin
-                                                        simp
-                                                    end
-                                    }
-                        end,
-    obj             :=  unit.star,
-    uniqueobj       :=  begin
-                            intro,
-                            apply punit.cases_on X,
-                            refl
-                        end 
+    hom         :=  (λ X Y : D, α),
+    id          :=  (λ X : D, (1 : α)), 
+    comp        :=  (λ X Y Z : D, (λ x y : α, (x * y : α))),
+    id_comp'    :=  by simp,
+    comp_id'    :=  by simp,
+    assoc'      :=  λ _ _ _ _ _ _ _, by rw mul_assoc,  
+    hominverse  :=  begin
+                        intros _ _ x,
+                        exact   {
+                                    inv := x⁻¹, 
+                                    hom_inv_id' :=  by simp,
+                                    inv_hom_id' :=  by simp
+                                }
+                    end,
+    obj         :=  unit.star,
+    uniqueobj'  :=  begin
+                        intro,
+                        apply punit.cases_on X,
+                        refl
+                    end 
 }
 
 
@@ -87,4 +79,4 @@ end
 
 --example {α : Type v} [a :group α] : is_group_hom  :=
 
-end categories.CatGroup
+end category_theory.CatGroup
