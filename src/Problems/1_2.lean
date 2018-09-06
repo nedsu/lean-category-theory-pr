@@ -33,7 +33,7 @@ end
 definition Grp_id_nat_trans_center (C : Type u) [𝒞 : CatGroup C] :
 { a : 𝒞.obj ⟶ 𝒞.obj // ∀ x : 𝒞.obj ⟶ 𝒞.obj, a ≫ x = x ≫ a} ≃ (functor.id C ⟹ functor.id C) :=
 { to_fun := λ ⟨a , ha⟩, 
-                ⟨ (λ X, (𝟙X : (functor.id C) X ⟶ X) ≫ (𝟙𝒞.obj : X ⟶ 𝒞.obj) ≫ a ≫ (𝟙𝒞.obj : 𝒞.obj ⟶ X) ≫ (𝟙X : X ⟶ (functor.id C) X) ) , _ ⟩,
+                ⟨ (λ X, (𝟙X : (functor.id C) X ⟶ X) ≫ (𝟙 𝒞.obj : X ⟶ 𝒞.obj) ≫ a ≫ (𝟙 𝒞.obj : 𝒞.obj ⟶ X) ≫ (𝟙X : X ⟶ (functor.id C) X) ) , _ ⟩,
   inv_fun := λ α, ⟨(𝟙 𝒞.obj : 𝒞.obj ⟶ ((functor.id C) 𝒞.obj)) ≫ α 𝒞.obj ≫
                     (𝟙 (𝒞.obj) : ((functor.id C) 𝒞.obj) ⟶ 𝒞.obj),λ x,
                         begin
