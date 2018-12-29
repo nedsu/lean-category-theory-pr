@@ -5,7 +5,7 @@ universes u v u₀ v₀
 
 namespace category_theory.isomorphism
 
-definition is_iso' {D : Type u} [𝒟 : category.{u v} D] {X Y : D} (f : X ⟶ Y) : Prop := nonempty (is_iso f)
+definition is_iso' {D : Type u} [𝒟 : category.{v} D] {X Y : D} (f : X ⟶ Y) : Prop := nonempty (is_iso f)
 
 end category_theory.isomorphism
 
@@ -13,19 +13,19 @@ end category_theory.isomorphism
 
 namespace category_theory.functor
 
-variables {D : Type u} [𝒟 : category.{u v} D] {E : Type u₀} [ℰ : category.{u₀ v₀} E]
+variables {D : Type u} [𝒟 : category.{v} D] {E : Type u₀} [ℰ : category.{v₀} E]
 include 𝒟 ℰ
 
 definition is_Faithful_Functor  (F : D ⥤ E) := 
                                 ∀ {A B : D} {f g : A ⟶ B} (p : F.map f = F.map g), f = g
 
 definition is_Full_Functor      (F : D ⥤ E)  := 
-                                ∀ {A B : D} (h : F A ⟶ F B), ∃f : A ⟶ B, F.map f = h
+                                ∀ {A B : D} (h : F.obj A ⟶ F.obj B), ∃f : A ⟶ B, F.map f = h
 
 structure Full_and_Faithful_Functor (F : D ⥤ E) : Type (max u v u₀ v₀) :=
-    (morinv : Π {X Y : D}, (F X ⟶ F Y) → (X ⟶ Y))
+    (morinv : Π {X Y : D}, (F.obj X ⟶ F.obj Y) → (X ⟶ Y))
     (left_inverse' : ∀ {X Y : D} {f : X ⟶ Y}, morinv (F.map f) = f)
-    (right_inverse' : ∀ {X Y : D} {f : F X ⟶ F Y}, F.map (morinv f) = f)
+    (right_inverse' : ∀ {X Y : D} {f : F.obj X ⟶ F.obj Y}, F.map (morinv f) = f)
 
 restate_axiom Full_and_Faithful_Functor.left_inverse'
 restate_axiom Full_and_Faithful_Functor.right_inverse'
@@ -71,13 +71,13 @@ end category_theory.functor
 
 namespace category_theory.Idempotent
 
-definition is_Idempotent {D : Type u} [𝒟 : category.{u v} D] {X : D} (e : X ⟶ X) := 
+definition is_Idempotent {D : Type u} [𝒟 : category.{v} D] {X : D} (e : X ⟶ X) := 
                                 e ≫ e = e
 
-definition is_Split_Idempotent {D : Type u} [𝒟 : category.{u v} D] {X : D} (e : X ⟶ X) := 
+definition is_Split_Idempotent {D : Type u} [𝒟 : category.{v} D] {X : D} (e : X ⟶ X) := 
                                 ∃(Y : D) (f : X ⟶ Y) (g : Y ⟶ X),(f ≫ g = e)∧(g ≫ f = 𝟙Y) 
 
-lemma Split_Idem_is_Idem {D : Type u} [𝒟 : category.{u v} D] (X : D) (e : X ⟶ X) : (is_Split_Idempotent e) → (is_Idempotent e) :=
+lemma Split_Idem_is_Idem {D : Type u} [𝒟 : category.{v} D] (X : D) (e : X ⟶ X) : (is_Split_Idempotent e) → (is_Idempotent e) :=
     begin
         intro hsi,
         cases (classical.indefinite_description _ hsi) with Y hsi₁,

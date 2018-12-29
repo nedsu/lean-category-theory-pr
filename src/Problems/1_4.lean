@@ -5,20 +5,20 @@ universes u₁ v₁ u₂ v₂ u₃ v₃ u₄ v₄
 
 --4a Show that any functor F : C ⥤ D can be factorised as L : C ⥤ E and R : E ⥤ D where L is bijective on objects, and R is full and faithful.
 
-structure functor_decomp (C : Type u₁) [category.{u₁ v₁} C] (D : Type u₂) [category.{u₂ v₂} D] (F: C ⥤ D) : Type (max u₁ v₁ u₂ v₂+1) :=
+structure functor_decomp (C : Type u₁) [category.{v₁} C] (D : Type u₂) [category.{v₂} D] (F: C ⥤ D) : Type (max u₁ v₁ u₂ v₂+1) :=
     (E : Type u₁)
-    (decomp_category : (category.{u₁ v₂} E))
+    (decomp_category : (category.{v₂} E))
     (functor1 : C ⥤ E)
     (functor2 : E ⥤ D)
     (biject : bijective(functor1.obj) . obviously)
     (fandf : is_Faithful_Functor functor2 ∧ is_Full_Functor functor2)
 
-definition canonical_functor_decomp (C : Type u₁) [category.{u₁ v₁} C] (D : Type u₂) [category.{u₂ v₂} D] (F : C ⥤ D) : (functor_decomp _ _ F) := 
+definition canonical_functor_decomp (C : Type u₁) [category.{v₁} C] (D : Type u₂) [category.{v₂} D] (F : C ⥤ D) : (functor_decomp _ _ F) := 
     {
         E := C,
         decomp_category :=  {
-                                hom         := (λ X Y : C, (F X) ⟶ (F Y)),
-                                id          := (λ X, 𝟙(F X)),
+                                hom         := (λ X Y : C, (F.obj X) ⟶ (F.obj Y)),
+                                id          := (λ X, 𝟙(F.obj X)),
                                 comp        := (λ _ _ _ f g, f ≫ g),
                                 id_comp'    := by simp,
                                 comp_id'    := by simp,
@@ -26,13 +26,13 @@ definition canonical_functor_decomp (C : Type u₁) [category.{u₁ v₁} C] (D 
                             },
         functor1 := {
                         obj         := λ X , X,
-                        map'        := λ _ _ f, F.map f,
+                        map        := λ _ _ f, F.map f,
                         map_id'     := by simp,
                         map_comp'   := (λ _ _ _ _ _ , by simp)
                     },
         functor2 := {
-                        obj         := λ X, F X,
-                        map'        := λ _ _ f, f,
+                        obj         := λ X, F.obj X,
+                        map        := λ _ _ f, f,
                         map_id'     := by simp,
                         map_comp'   := (λ _ _ _ _ _ , by simp)
                     },
@@ -67,13 +67,13 @@ definition canonical_functor_decomp (C : Type u₁) [category.{u₁ v₁} C] (D 
 --4b
 section
 variable {B : Type u₁}
-variable [ℬ : category.{u₁ v₁} B]
+variable [ℬ : category.{v₁} B]
 variable {C : Type u₂}
-variable [𝒞 : category.{u₂ v₂} C]
+variable [𝒞 : category.{v₂} C]
 variable {D : Type u₃}
-variable [𝒟 : category.{u₃ v₃} D]
+variable [𝒟 : category.{v₃} D]
 variable {E : Type u₄}
-variable [ℰ : category.{u₄ v₄} E]
+variable [ℰ : category.{v₄} E]
 variables (L : B ⥤ C) (F : B ⥤ D) (R : D ⥤ E) (G : C ⥤ E)
 include ℬ 𝒞 𝒟 ℰ
 
@@ -107,14 +107,14 @@ end-/
 
 definition fourb (Linv : C → B) (hlinv : left_inverse L.obj Linv) (hrinv : right_inverse L.obj Linv) (Rff : Full_and_Faithful_Functor R) (heq : L ⋙ G = F ⋙ R) : C ⥤ D :=
     {
-        obj         :=    λ Xc, (F (Linv Xc)),
-        map'        :=  λ Xc Yc f, Rff.morinv (cast 
+        obj         :=    λ Xc, (F.obj (Linv Xc)),
+        map        :=  λ Xc Yc f, Rff.morinv (cast 
                                     (calc
-                                        (G Xc ⟶ G Yc)    = (G Xc ⟶ G (L.obj (Linv Yc))) : by rw hlinv
-                                        ...                     = (G (L.obj (Linv Xc)) ⟶ G (L.obj (Linv Yc))) : by rw (hlinv Xc)
-                                        ...                     = ((L ⋙ G) (Linv Xc) ⟶ (L ⋙ G) (Linv Yc)) : by simp
-                                        ...                     = ((F ⋙ R) (Linv Xc) ⟶ (F ⋙ R) (Linv Yc)) : by rw heq
-                                        ...                     = (R (F (Linv Xc))⟶ R (F (Linv Yc))) : by simp) (G.map f)),
+                                        (G.obj Xc ⟶ G.obj Yc)    = (G.obj Xc ⟶ G.obj (L.obj (Linv Yc))) : by rw hlinv
+                                        ...                     = (G.obj (L.obj (Linv Xc)) ⟶ G.obj (L.obj (Linv Yc))) : by rw (hlinv Xc)
+                                        ...                     = ((L ⋙ G).obj (Linv Xc) ⟶ (L ⋙ G).obj (Linv Yc)) : by simp
+                                        ...                     = ((F ⋙ R).obj (Linv Xc) ⟶ (F ⋙ R).obj (Linv Yc)) : by rw heq
+                                        ...                     = (R.obj (F.obj (Linv Xc))⟶ R.obj (F.obj (Linv Yc))) : by simp) (G.map f)),
         map_id'     :=   begin
                             intro Xc,
                             sorry

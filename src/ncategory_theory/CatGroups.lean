@@ -10,7 +10,7 @@ namespace category_theory.CatGroup
 variables (C : Type u)
 definition D := unit
 
-class CatGroupoid (C : Type u) extends category.{u v} C :=
+class CatGroupoid (C : Type u) extends category.{v} C :=
     (hominverse : Π {X Y : C} (f : X ⟶ Y), is_iso f)
 
 class CatGroup (C : Type u) extends CatGroupoid C :=
@@ -30,7 +30,7 @@ instance CatGroupoid.homgroup [𝒞 : CatGroupoid C] (X : C) : group (X ⟶ X) :
     one_mul         := by simp,
     mul_one         := by simp,
     inv             := (λ g, (CatGroupoid.hominverse g).1),
-    mul_left_inv    := by simp
+    mul_left_inv    := sorry
 }
 
 instance CatGroup_to_group {C : Type u} (𝒞 : CatGroup C) : group (𝒞.obj ⟶ 𝒞.obj) :=

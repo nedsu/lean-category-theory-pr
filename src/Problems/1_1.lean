@@ -7,7 +7,7 @@ open tactic
 
 --delaration of universes and variables
 universes u v u₁ v₁
-variables (C : Type u₁) [𝒞 : category.{u₁ v₁} C]
+variables (C : Type u₁) [𝒞 : category.{v₁} C]
 include 𝒞
 
 -- 1a Show that identities in a category are unique
@@ -60,7 +60,7 @@ section Two_Out_Of_Three
                     simp,
                     exact calc
                     f ≫ g ≫ Ig.1 ≫ If.1 = f ≫ (g ≫ Ig.1) ≫ If.1 : by rw category.assoc
-                    ...                   = f ≫ 𝟙Y ≫ If.1          : by rw is_iso.hom_inv_id
+                    ...                   = f ≫ 𝟙Y ≫ If.1          : by rw is_iso.hom_inv_id g
                     ...                   = f ≫ If.1               : by rw category.id_comp
                     ...                   = 𝟙X                      : by rw is_iso.hom_inv_id
                 end,    
@@ -129,7 +129,7 @@ section Two_Out_Of_Three
         end
 end Two_Out_Of_Three
 
-variables {D : Type u} [𝒟 : category.{u v} D]
+variables {D : Type u} [𝒟 : category.{v} D]
 include 𝒟
 
 -- 1d Show functors preserve isomorphisms

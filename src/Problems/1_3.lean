@@ -4,7 +4,7 @@ open category_theory category_theory.isomorphism category_theory.functor categor
 
 --delaration of universes and variables
 universes u v u₁ v₁
-variables (C : Type u) [𝒞 : category.{u v} C] 
+variables (C : Type u) [𝒞 : category.{v} C] 
 include 𝒞
 
 namespace Idempotent

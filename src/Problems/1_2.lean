@@ -7,14 +7,14 @@ open category_theory category_theory.isomorphism category_theory.functor categor
 universes u v u₀ v₀ u₁ v₁ u₂ v₂ 
 
 
-lemma t {C : Type u} [𝒞 : CatGroup C] : ∀ X Y : C,((𝒞.obj ⟶ 𝒞.obj) = ((functor.id C) X ⟶ (functor.id C) Y)) :=
+lemma t {C : Type u} [𝒞 : CatGroup C] : ∀ X Y : C,((𝒞.obj ⟶ 𝒞.obj) = ((functor.id C).obj X ⟶ (functor.id C).obj Y)) :=
 begin
 intros,
 exact calc
-    (𝒞.obj ⟶ 𝒞.obj) = (((functor.id C) (𝒞.obj)) ⟶ 𝒞.obj) : by simp
-    ... = ((functor.id C) 𝒞.obj ⟶ (functor.id C) 𝒞.obj) : by simp
-    ... = ((functor.id C) X ⟶ (functor.id C) 𝒞.obj) : by rw CatGroup.uniqueobj X
-    ... = ((functor.id C) X ⟶ (functor.id C) Y) : by rw CatGroup.uniqueobj Y
+    (𝒞.obj ⟶ 𝒞.obj) = (((functor.id C).obj (𝒞.obj)) ⟶ 𝒞.obj) : by simp
+    ... = ((functor.id C).obj 𝒞.obj ⟶ (functor.id C).obj 𝒞.obj) : by simp
+    ... = ((functor.id C).obj X ⟶ (functor.id C).obj 𝒞.obj) : by rw CatGroup.uniqueobj X
+    ... = ((functor.id C).obj X ⟶ (functor.id C).obj Y) : by rw CatGroup.uniqueobj Y
 end
 
 
@@ -33,9 +33,9 @@ end
 definition Grp_id_nat_trans_center (C : Type u) [𝒞 : CatGroup C] :
 { a : 𝒞.obj ⟶ 𝒞.obj // ∀ x : 𝒞.obj ⟶ 𝒞.obj, a ≫ x = x ≫ a} ≃ (functor.id C ⟹ functor.id C) :=
 { to_fun := λ ⟨a , ha⟩, 
-                ⟨ (λ X, (𝟙X : (functor.id C) X ⟶ X) ≫ (𝟙 𝒞.obj : X ⟶ 𝒞.obj) ≫ a ≫ (𝟙 𝒞.obj : 𝒞.obj ⟶ X) ≫ (𝟙X : X ⟶ (functor.id C) X) ) , _ ⟩,
-  inv_fun := λ α, ⟨(𝟙 𝒞.obj : 𝒞.obj ⟶ ((functor.id C) 𝒞.obj)) ≫ α 𝒞.obj ≫
-                    (𝟙 (𝒞.obj) : ((functor.id C) 𝒞.obj) ⟶ 𝒞.obj),λ x,
+                ⟨ (λ X, (𝟙X : (functor.id C).obj X ⟶ X) ≫ (𝟙 𝒞.obj : X ⟶ 𝒞.obj) ≫ a ≫ (𝟙 𝒞.obj : 𝒞.obj ⟶ X) ≫ (𝟙X : X ⟶ (functor.id C).obj X) ) , _ ⟩,
+  inv_fun := λ α, ⟨(𝟙 𝒞.obj : 𝒞.obj ⟶ ((functor.id C).obj 𝒞.obj)) ≫ α 𝒞.obj ≫
+                    (𝟙 (𝒞.obj) : ((functor.id C).obj 𝒞.obj) ⟶ 𝒞.obj),λ x,
                         begin
                             rw [category.id_comp,←category.assoc],
                             rw @category.comp_id _ _ _ 𝒞.obj _,
