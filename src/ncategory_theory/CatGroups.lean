@@ -30,7 +30,7 @@ instance CatGroupoid.homgroup [𝒞 : CatGroupoid C] (X : C) : group (X ⟶ X) :
     one_mul         := by simp,
     mul_one         := by simp,
     inv             := (λ g, (CatGroupoid.hominverse g).1),
-    mul_left_inv    := sorry
+    mul_left_inv    := begin intro, unfold, apply is_iso.inv_hom_id' end
 }
 
 instance CatGroup_to_group {C : Type u} (𝒞 : CatGroup C) : group (𝒞.obj ⟶ 𝒞.obj) :=
